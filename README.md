@@ -14,7 +14,7 @@ Code gen is needed for generating:
 - Lister
 
 ### Procedure ###
-- cd ~/$Your_Go_Path
+- cd ~/$Your_Go_Path/sample-controller
 - import `"k8s.io/code-generator"` into `main.go`
 - run `go mod tidy;go mod vendor`
 - run `chmod +x vendor/k8s.io/code-generator/generate-groups.sh`
@@ -25,7 +25,8 @@ Code gen is needed for generating:
 ## Deploy custom resource ##
 
 Just create a yaml file like `manifests/kluster.yaml` and apply.
-
+Run `kubectl apply -f pritamdas.dev_kluster.yaml`
+Run `kubectl apply -f Kluster.yaml`
 Run `kubectl get Kluster`
 
 ## Resource ##
