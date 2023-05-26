@@ -26,7 +26,7 @@ func init() {
 }
 
 func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion, &Kluster{}, &KlusterList{})
+	scheme.AddKnownTypes(SchemeGroupVersion, &Pritam{}, &PritamList{})
 	scheme.AddKnownTypes(SchemeGroupVersion, &metav1.Status{})
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil

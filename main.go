@@ -50,7 +50,7 @@ func main() {
 	// podInformer := kubeInformationFactory.Core().V1().Pods()
 	ctrl := controller.NewController(kubeClient, exampleClient,
 		kubeInformationFactory.Apps().V1().Deployments(),
-		exampleInformationFactory.Pritamdas().V1alpha1().Klusters())
+		exampleInformationFactory.Pritamdas().V1alpha1().Pritams())
 
 	stopCh := make(chan struct{})
 	kubeInformationFactory.Start(stopCh)

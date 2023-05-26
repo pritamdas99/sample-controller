@@ -17,24 +17,24 @@ limitations under the License.
 
 package v1alpha1
 
-// KlusterSpecApplyConfiguration represents an declarative configuration of the KlusterSpec type for use
+// PritamSpecApplyConfiguration represents an declarative configuration of the PritamSpec type for use
 // with apply.
-type KlusterSpecApplyConfiguration struct {
+type PritamSpecApplyConfiguration struct {
 	Name      *string                          `json:"name,omitempty"`
 	Replicas  *int32                           `json:"replicas,omitempty"`
 	Container *ContainerSpecApplyConfiguration `json:"container,omitempty"`
 }
 
-// KlusterSpecApplyConfiguration constructs an declarative configuration of the KlusterSpec type for use with
+// PritamSpecApplyConfiguration constructs an declarative configuration of the PritamSpec type for use with
 // apply.
-func KlusterSpec() *KlusterSpecApplyConfiguration {
-	return &KlusterSpecApplyConfiguration{}
+func PritamSpec() *PritamSpecApplyConfiguration {
+	return &PritamSpecApplyConfiguration{}
 }
 
 // WithName sets the Name field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Name field is set to the value of the last call.
-func (b *KlusterSpecApplyConfiguration) WithName(value string) *KlusterSpecApplyConfiguration {
+func (b *PritamSpecApplyConfiguration) WithName(value string) *PritamSpecApplyConfiguration {
 	b.Name = &value
 	return b
 }
@@ -42,7 +42,7 @@ func (b *KlusterSpecApplyConfiguration) WithName(value string) *KlusterSpecApply
 // WithReplicas sets the Replicas field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Replicas field is set to the value of the last call.
-func (b *KlusterSpecApplyConfiguration) WithReplicas(value int32) *KlusterSpecApplyConfiguration {
+func (b *PritamSpecApplyConfiguration) WithReplicas(value int32) *PritamSpecApplyConfiguration {
 	b.Replicas = &value
 	return b
 }
@@ -50,7 +50,7 @@ func (b *KlusterSpecApplyConfiguration) WithReplicas(value int32) *KlusterSpecAp
 // WithContainer sets the Container field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Container field is set to the value of the last call.
-func (b *KlusterSpecApplyConfiguration) WithContainer(value *ContainerSpecApplyConfiguration) *KlusterSpecApplyConfiguration {
+func (b *PritamSpecApplyConfiguration) WithContainer(value *ContainerSpecApplyConfiguration) *PritamSpecApplyConfiguration {
 	b.Container = value
 	return b
 }

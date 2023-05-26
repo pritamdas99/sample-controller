@@ -1,5 +1,5 @@
 apiVersion: pritamdas.dev/v1alpha1
-kind: Kluster
+kind: Pritam
 metadata:
   name: example1
 spec:

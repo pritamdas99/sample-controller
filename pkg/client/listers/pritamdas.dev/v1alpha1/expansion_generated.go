@@ -17,10 +17,10 @@ limitations under the License.
 
 package v1alpha1
 
-// KlusterListerExpansion allows custom methods to be added to
-// KlusterLister.
-type KlusterListerExpansion interface{}
+// PritamListerExpansion allows custom methods to be added to
+// PritamLister.
+type PritamListerExpansion interface{}
 
-// KlusterNamespaceListerExpansion allows custom methods to be added to
-// KlusterNamespaceLister.
-type KlusterNamespaceListerExpansion interface{}
+// PritamNamespaceListerExpansion allows custom methods to be added to
+// PritamNamespaceLister.
+type PritamNamespaceListerExpansion interface{}

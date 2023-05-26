@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  name: klusters.pritamdas.dev
+  name: pritams.pritamdas.dev
 spec:
   group: pritamdas.dev
   names:
-    kind: Kluster
-    listKind: KlusterList
-    plural: klusters
-    singular: kluster
+    kind: Pritam
+    listKind: PritamList
+    plural: pritams
+    singular: pritam
   scope: Namespaced
   versions:
   - name: v1alpha1

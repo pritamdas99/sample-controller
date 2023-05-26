@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// KlusterInformer provides access to a shared informer and lister for
-// Klusters.
-type KlusterInformer interface {
+// PritamInformer provides access to a shared informer and lister for
+// Pritams.
+type PritamInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.KlusterLister
+	Lister() v1alpha1.PritamLister
 }
 
-type klusterInformer struct {
+type pritamInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewKlusterInformer constructs a new informer for Kluster type.
+// NewPritamInformer constructs a new informer for Pritam type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewKlusterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredKlusterInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewPritamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredPritamInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredKlusterInformer constructs a new informer for Kluster type.
+// NewFilteredPritamInformer constructs a new informer for Pritam type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredKlusterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredPritamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PritamdasV1alpha1().Klusters(namespace).List(context.TODO(), options)
+				return client.PritamdasV1alpha1().Pritams(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PritamdasV1alpha1().Klusters(namespace).Watch(context.TODO(), options)
+				return client.PritamdasV1alpha1().Pritams(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&pritamdasdevv1alpha1.Kluster{},
+		&pritamdasdevv1alpha1.Pritam{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *klusterInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredKlusterInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *pritamInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredPritamInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *klusterInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&pritamdasdevv1alpha1.Kluster{}, f.defaultInformer)
+func (f *pritamInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&pritamdasdevv1alpha1.Pritam{}, f.defaultInformer)
 }
 
-func (f *klusterInformer) Lister() v1alpha1.KlusterLister {
-	return v1alpha1.NewKlusterLister(f.Informer().GetIndexer())
+func (f *pritamInformer) Lister() v1alpha1.PritamLister {
+	return v1alpha1.NewPritamLister(f.Informer().GetIndexer())
 }

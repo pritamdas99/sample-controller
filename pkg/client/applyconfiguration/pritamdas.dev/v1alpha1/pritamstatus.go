@@ -17,22 +17,22 @@ limitations under the License.
 
 package v1alpha1
 
-// KlusterStatusApplyConfiguration represents an declarative configuration of the KlusterStatus type for use
+// PritamStatusApplyConfiguration represents an declarative configuration of the PritamStatus type for use
 // with apply.
-type KlusterStatusApplyConfiguration struct {
+type PritamStatusApplyConfiguration struct {
 	AvailableReplicas *int32 `json:"availableReplicas,omitempty"`
 }
 
-// KlusterStatusApplyConfiguration constructs an declarative configuration of the KlusterStatus type for use with
+// PritamStatusApplyConfiguration constructs an declarative configuration of the PritamStatus type for use with
 // apply.
-func KlusterStatus() *KlusterStatusApplyConfiguration {
-	return &KlusterStatusApplyConfiguration{}
+func PritamStatus() *PritamStatusApplyConfiguration {
+	return &PritamStatusApplyConfiguration{}
 }
 
 // WithAvailableReplicas sets the AvailableReplicas field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the AvailableReplicas field is set to the value of the last call.
-func (b *KlusterStatusApplyConfiguration) WithAvailableReplicas(value int32) *KlusterStatusApplyConfiguration {
+func (b *PritamStatusApplyConfiguration) WithAvailableReplicas(value int32) *PritamStatusApplyConfiguration {
 	b.AvailableReplicas = &value
 	return b
 }

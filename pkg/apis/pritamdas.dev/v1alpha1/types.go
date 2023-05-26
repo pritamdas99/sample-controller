@@ -10,30 +10,30 @@ type ContainerSpec struct {
 	Port  int32  `json:"port,omitempty"`
 }
 
-type KlusterSpec struct {
+type PritamSpec struct {
 	Name      string        `json:"name,omitempty"`
 	Replicas  *int32        `json:"replicas"`
 	Container ContainerSpec `json:"container"`
 }
 
-type KlusterStatus struct {
+type PritamStatus struct {
 	AvailableReplicas int32 `json:"availableReplicas"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Kluster struct {
+type Pritam struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              KlusterSpec   `json:"spec"`
-	Status            KlusterStatus `json:"status,omitempty"`
+	Spec              PritamSpec   `json:"spec"`
+	Status            PritamStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type KlusterList struct {
+type PritamList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Kluster `json:"items"`
+	Items           []Pritam `json:"items"`
 }

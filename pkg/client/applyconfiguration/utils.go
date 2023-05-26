@@ -30,12 +30,12 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 	// Group=pritamdas.dev, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithKind("ContainerSpec"):
 		return &pritamdasdevv1alpha1.ContainerSpecApplyConfiguration{}
-	case v1alpha1.SchemeGroupVersion.WithKind("Kluster"):
-		return &pritamdasdevv1alpha1.KlusterApplyConfiguration{}
-	case v1alpha1.SchemeGroupVersion.WithKind("KlusterSpec"):
-		return &pritamdasdevv1alpha1.KlusterSpecApplyConfiguration{}
-	case v1alpha1.SchemeGroupVersion.WithKind("KlusterStatus"):
-		return &pritamdasdevv1alpha1.KlusterStatusApplyConfiguration{}
+	case v1alpha1.SchemeGroupVersion.WithKind("Pritam"):
+		return &pritamdasdevv1alpha1.PritamApplyConfiguration{}
+	case v1alpha1.SchemeGroupVersion.WithKind("PritamSpec"):
+		return &pritamdasdevv1alpha1.PritamSpecApplyConfiguration{}
+	case v1alpha1.SchemeGroupVersion.WithKind("PritamStatus"):
+		return &pritamdasdevv1alpha1.PritamStatusApplyConfiguration{}
 
 	}
 	return nil

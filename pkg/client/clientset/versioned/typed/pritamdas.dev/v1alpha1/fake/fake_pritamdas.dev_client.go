@@ -27,8 +27,8 @@ type FakePritamdasV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakePritamdasV1alpha1) Klusters(namespace string) v1alpha1.KlusterInterface {
-	return &FakeKlusters{c, namespace}
+func (c *FakePritamdasV1alpha1) Pritams(namespace string) v1alpha1.PritamInterface {
+	return &FakePritams{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

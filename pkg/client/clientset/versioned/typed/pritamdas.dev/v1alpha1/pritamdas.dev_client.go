@@ -27,7 +27,7 @@ import (
 
 type PritamdasV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	KlustersGetter
+	PritamsGetter
 }
 
 // PritamdasV1alpha1Client is used to interact with features provided by the pritamdas.dev group.
@@ -35,8 +35,8 @@ type PritamdasV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *PritamdasV1alpha1Client) Klusters(namespace string) KlusterInterface {
-	return newKlusters(c, namespace)
+func (c *PritamdasV1alpha1Client) Pritams(namespace string) PritamInterface {
+	return newPritams(c, namespace)
 }
 
 // NewForConfig creates a new PritamdasV1alpha1Client for the given config.
