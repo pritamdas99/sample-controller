@@ -189,42 +189,50 @@ func (c *Controller) syncHandler(key string) error {
 	}
 	//fmt.Println("we are here")
 
-	deploymentName := pritam.Spec.Name
-	ss := []string{"service", pritam.Spec.Name}
-	serviceName := strings.Join(ss, "-")
-	log.Println("got deployment name", deploymentName)
-	if pritam.Spec.Name == "" {
-		// We choose to absorb the error here as the worker would requeue the
-		// resource otherwise. Instead, the next time the resource is updated
-		// the resource will be queued again.
-
-		//utilruntime.HandleError(fmt.Errorf("%s : deployment name must be specified", key))
-		//return nil
-		//s := "sha1 this string"
-		//h := sha1.New()
-		//h.Write([]byte(s))
-		//sha1_hash := hex.EncodeToString(h.Sum(nil))
-
-		//fmt.Println(s, sha1_hash)
-		ss = []string{pritam.Name, "missing"}
-		deploymentName = strings.Join(ss, "-")
-		ss = []string{"service", pritam.Name, "missing"}
-		serviceName = strings.Join(ss, "-")
-	}
+	//deploymentName := pritam.Spec.Name
+	//ss := []string{"service", pritam.Spec.Name}
+	//serviceName := strings.Join(ss, "-")
+	//log.Println("got deployment name", deploymentName)
+	//if pritam.Spec.Name == "" {
+	//	// We choose to absorb the error here as the worker would requeue the
+	//	// resource otherwise. Instead, the next time the resource is updated
+	//	// the resource will be queued again.
+	//
+	//	//utilruntime.HandleError(fmt.Errorf("%s : deployment name must be specified", key))
+	//	//return nil
+	//	//s := "sha1 this string"
+	//	//h := sha1.New()
+	//	//h.Write([]byte(s))
+	//	//sha1_hash := hex.EncodeToString(h.Sum(nil))
+	//
+	//	//fmt.Println(s, sha1_hash)
+	//	ss = []string{pritam.Name, "missing"}
+	//	deploymentName = strings.Join(ss, "-")
+	//	ss = []string{"service", pritam.Name, "missing"}
+	//	serviceName = strings.Join(ss, "-")
+	//}
 	log.Println("we are here", pritam.Spec.Name)
 
-	c.DeploymentHandler(pritam, namespace, name, deploymentName)
-	c.ServiceHandler(pritam, serviceName, deploymentName)
+	if err := c.DeploymentHandler(pritam); err != nil {
+		utilruntime.HandleError(fmt.Errorf("error while handling deployment: %s", err.Error()))
+
+	}
+	if err := c.ServiceHandler(pritam); err != nil {
+		utilruntime.HandleError(fmt.Errorf("error while handling service: %s", err.Error()))
+	}
 
 	return nil
 }
 
-func (c *Controller) DeploymentHandler(pritam *controllerv1.Pritam, namespace string, name string, deploymentName string) error {
+func (c *Controller) DeploymentHandler(pritam *controllerv1.Pritam) error {
 	// Get the deployment with the name specified in Pritam.spec
+	deploymentName := pritam.Spec.Name
+	namespace := pritam.Namespace
+	name := pritam.Name
 	deployment, err := c.deploymentLister.Deployments(namespace).Get(deploymentName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		deployment, err = c.kubeclientset.AppsV1().Deployments(pritam.Namespace).Create(context.TODO(), newDeployment(pritam, deploymentName), metav1.CreateOptions{})
+		deployment, err = c.kubeclientset.AppsV1().Deployments(pritam.Namespace).Create(context.TODO(), newDeployment(pritam), metav1.CreateOptions{})
 		if err != nil {
 			return err
 		}
@@ -243,7 +251,8 @@ func (c *Controller) DeploymentHandler(pritam *controllerv1.Pritam, namespace st
 	// should update the Deployment resource.
 	if pritam.Spec.Replicas != nil && *pritam.Spec.Replicas != *deployment.Spec.Replicas {
 		log.Printf("Pritam %s replicas: %d, deployment replicas: %d\n", name, *pritam.Spec.Replicas, *deployment.Spec.Replicas)
-		deployment, err = c.kubeclientset.AppsV1().Deployments(namespace).Update(context.TODO(), newDeployment(pritam, deploymentName), metav1.UpdateOptions{})
+		deployment.Spec.Replicas = pritam.Spec.Replicas
+		deployment, err = c.kubeclientset.AppsV1().Deployments(namespace).Update(context.TODO(), deployment, metav1.UpdateOptions{})
 
 		// If an error occurs during Update, we'll requeue the item, so we can
 		// attempt processing again later. This could have been caused by a
@@ -262,11 +271,12 @@ func (c *Controller) DeploymentHandler(pritam *controllerv1.Pritam, namespace st
 
 }
 
-func (c *Controller) ServiceHandler(pritam *controllerv1.Pritam, serviceName string, deploymentName string) error {
+func (c *Controller) ServiceHandler(pritam *controllerv1.Pritam) error {
 	// check if service exists or not
+	serviceName := pritam.Spec.Name
 	service, err := c.kubeclientset.CoreV1().Services(pritam.Namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
-		service, err = c.kubeclientset.CoreV1().Services(pritam.Namespace).Create(context.TODO(), newService(pritam, serviceName, deploymentName), metav1.CreateOptions{})
+		service, err = c.kubeclientset.CoreV1().Services(pritam.Namespace).Create(context.TODO(), newService(pritam), metav1.CreateOptions{})
 		if err != nil {
 			log.Println(err)
 			return err
@@ -306,7 +316,7 @@ func (c *Controller) updatePritamStatus(pritam *controllerv1.Pritam, deployment 
 // the appropriate OwnerReferences on the resource so handleObject can discover
 // the Pritam resource that 'owns' it.
 
-func Arrr(arr ...string) []string {
+func buildSlice(arr ...string) []string {
 	var ss []string
 
 	for _, v := range arr {
@@ -315,27 +325,31 @@ func Arrr(arr ...string) []string {
 	return ss
 }
 
-func newDeployment(pritam *controllerv1.Pritam, deploymentName string) *appsv1.Deployment {
+func newDeployment(pritam *controllerv1.Pritam) *appsv1.Deployment {
+	deploymentName := pritam.Spec.Name
+	if deploymentName == "" {
+		deploymentName = strings.Join([]string{pritam.Name, "dep"}, "-")
+	}
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      deploymentName,
 			Namespace: pritam.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
 
-				*metav1.NewControllerRef(pritam, controllerv1.SchemeGroupVersion.WithKind("Pritam")),
+				*metav1.NewControllerRef(pritam, controllerv1.SchemeGroupVersion.WithKind(controllerv1.ResourceDefinition)),
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: pritam.Spec.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					controllerv1.App: strings.Join(Arrr("my-app", deploymentName), "-"),
+					controllerv1.App: strings.Join(buildSlice(controllerv1.Myapp, pritam.Name), "-"),
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						controllerv1.App: strings.Join(Arrr("my-app", deploymentName), "-"),
+						controllerv1.App: strings.Join(buildSlice(controllerv1.Myapp, deploymentName), "-"),
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -358,14 +372,18 @@ func newDeployment(pritam *controllerv1.Pritam, deploymentName string) *appsv1.D
 	}
 }
 
-func newService(pritam *controllerv1.Pritam, name string, dep_name string) *corev1.Service {
+func newService(pritam *controllerv1.Pritam) *corev1.Service {
+	serviceName := pritam.Spec.Name
+	if serviceName == "" {
+		serviceName = strings.Join([]string{pritam.Name, "svc"}, "-")
+	}
 	labels := map[string]string{
-		controllerv1.App: strings.Join(Arrr("my-app", dep_name), "-"),
+		controllerv1.App: strings.Join(buildSlice(controllerv1.Myapp, pritam.Name), "-"),
 	}
 	return &corev1.Service{
 
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name: serviceName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(pritam, controllerv1.SchemeGroupVersion.WithKind(controllerv1.ResourceDefinition)),
 			},
