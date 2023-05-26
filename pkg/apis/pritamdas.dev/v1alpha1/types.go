@@ -13,7 +13,7 @@ type ContainerSpec struct {
 type KlusterSpec struct {
 	Name      string        `json:"name,omitempty"`
 	Replicas  *int32        `json:"replicas"`
-	Container ContainerSpec `json:"container,container"`
+	Container ContainerSpec `json:"container"`
 }
 
 type KlusterStatus struct {
