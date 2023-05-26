@@ -7,4 +7,4 @@ spec:
   container:
     image: pritam99/api-server:0.0.1
     port: 8080
-  replicas: 4
+  replicas: 6
