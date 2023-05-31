@@ -5,4 +5,6 @@ const (
 	App                = "app"
 	Myapp              = "my-app"
 	PritamName         = "pritam-name"
+	Deployment         = "dep"
+	Service            = "svc"
 )
